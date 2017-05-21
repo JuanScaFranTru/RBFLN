@@ -53,6 +53,9 @@ class RBFLN(object):
         sess = tf.Session()
         sess.run(tf.global_variables_initializer())  # reset values to wrong
 
+        sess = tf_debug.LocalCLIDebugWrapperSession(sess)
+        sess.add_tensor_filter("has_inf_or_nan", tf_debug.has_inf_or_nan)
+
         for i in range(niter):
             sess.run(self.train, {self.x: xs, self.t: ts})
             # evaluate training accuracy
@@ -79,9 +82,9 @@ class RBFLN(object):
         M = self.M
 
         self.w = tf.Variable(tf.random_uniform([N], -0.5, 0.5),
-                             dtype=tf.float32)
+                             dtype=tf.float32, name="Linear")
         self.u = tf.Variable(tf.random_uniform([M], -0.5, 0.5),
-                             dtype=tf.float32)
+                             dtype=tf.float32, name="Non-linear")
 
     def _add_variance(self):
         """Compute initial values for variances to the model."""
