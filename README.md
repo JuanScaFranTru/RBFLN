@@ -1,2 +1,2 @@
 # RBFLN
-Radial Basis Functional Link Network
+Radial Basis Functional Link Network using TensorFlow
