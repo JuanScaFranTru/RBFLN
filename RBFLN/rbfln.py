@@ -109,11 +109,31 @@ class RBFLN(object):
         put v(q) = x(q) , q = 1,...,Q, and draw the remaining M - Q centers at
         random in the feature space.
         """
-        pass
+        M = self.M
+        N = self.N
+        Q = self.Q
+        xs = self.xs
+
+        v = xs[:M]
+
+        if M > Q:
+            v = np.concatenate((v, np.random.uniform(0, 1, (M - Q, N))))
+
+        self.v = tf.Variable(v, dtype=tf.float32, name="CenterV")
 
     def _add_ys(self):
         """Add y nodes to the model."""
-        pass
+        M = self.M
+        x = self.x
+        v = self.v
+
+        variance = self.variance
+
+        r_x = tf.tile(x, [M, 1])
+
+        norm = tf.reshape(-tf.norm(r_x - v, axis=1), tf.shape(variance))
+
+        self.y = tf.exp(norm ** 2.0) / (2.0 * variance)
 
     def _add_zs(self):
         """Add zs nodes to the model."""
