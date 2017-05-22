@@ -128,8 +128,7 @@ class RBFLN(object):
         v = self.v
 
         variance = self.variance
-
-        r_x = tf.tile(x, [M, 1])
+        r_x = tf.tile(x, [M])
 
         norm = tf.reshape(-tf.norm(r_x - v, axis=1), tf.shape(variance))
 
@@ -137,4 +136,11 @@ class RBFLN(object):
 
     def _add_zs(self):
         """Add zs nodes to the model."""
-        pass
+        M = self.M
+        N = self.N
+        x = tf.reshape(self.x, [N, 1])
+        y = tf.reshape(self.y, [M, 1])
+        w = tf.reshape(self.w, [1, N])
+        u = tf.reshape(self.u, [1, M])
+
+        self.z = (1/(M + N)) * (tf.matmul(y, u) + tf.matmul(x, w))
