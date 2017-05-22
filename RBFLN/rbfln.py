@@ -81,11 +81,25 @@ class RBFLN(object):
 
     def _add_weights(self):
         """Add linear and non-linear weights to the model."""
-        pass
+        # Select all weights randomly between -0.5 and 0.5
+        N = self.N
+        M = self.M
+
+        self.w = tf.Variable(tf.random_uniform([N], -0.5, 0.5),
+                             dtype=tf.float32, name="Linear")
+        self.u = tf.Variable(tf.random_uniform([M], -0.5, 0.5),
+                             dtype=tf.float32, name="Non-linear")
 
     def _add_variance(self):
         """Compute initial values for variances to the model."""
-        pass
+        N = self.N
+        M = self.M
+        variance = self.variance
+        if variance is None:
+            variance = 0.5 * (1/M) ** (1/N)
+
+        self.variance = tf.Variable([0.5] * M,
+                                    dtype=tf.float32, name="Variance")
 
     def _add_center_vectors(self):
         """Add center vectors nodes to the model.
