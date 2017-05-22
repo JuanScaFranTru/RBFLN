@@ -71,7 +71,7 @@ class RBFLN(object):
         z = self.z
         t = self.t
         square = tf.square(z - t)
-        self.loss = tf.reduce_sum(square)
+        self.loss = tf.reduce_sum(square, name='Loss')
 
     def _add_input_and_output(self):
         """Add input and output placeholders to the model."""
