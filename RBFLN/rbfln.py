@@ -1,4 +1,6 @@
+from tensorflow.python import debug as tf_debug
 import tensorflow as tf
+import numpy as np
 
 
 class RBFLN(object):
@@ -24,7 +26,45 @@ class RBFLN(object):
         :type niter: int
         :type variance: float
         """
-        pass
+        self.xs = xs
+        self.ts = ts
+        self.Q = len(xs)
+        self.M = M
+        self.N = N
+        self.niter = niter
+        self.variance = variance
+
+        # Build the neural network
+        self._add_input_and_output()
+        self._add_weights()
+        self._add_variance()
+        self._add_center_vectors()
+        self._add_ys()
+        self._add_zs()
+
+        # Add the loss function as part of the model
+        self._add_loss()
+
+        # Add an optimizer: gradient descent with a step of 0.01
+        self.optimizer = tf.train.GradientDescentOptimizer(0.01)
+        self.train = self.optimizer.minimize(self.loss)
+
+        # training loop
+        sess = tf.Session()
+        sess.run(tf.global_variables_initializer())
+
+        sess = tf_debug.LocalCLIDebugWrapperSession(sess)
+        sess.add_tensor_filter("has_inf_or_nan", tf_debug.has_inf_or_nan)
+
+        for i in range(niter):
+            eval_loss = 0
+            # TODO: Medir eficiencia de ZIP vs numpy transpose
+            for x, t in zip(xs, ts):
+                sess.run(self.train, {self.x: x, self.t: t})
+                # evaluate training accuracy
+            for x, t in zip(xs, ts):
+                eval_loss += sess.run([self.loss], {self.x: x, self.t: t})
+            print("Loss: ", eval_loss)
 
     def _add_loss(self):
         """Add loss function to model"""
