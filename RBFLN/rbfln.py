@@ -132,7 +132,7 @@ class RBFLN(object):
 
         norm = tf.reshape(-tf.norm(r_x - v, axis=1), tf.shape(variance))
 
-        self.y = tf.exp(norm ** 2.0) / (2.0 * variance)
+        self.y = tf.exp((norm ** 2.0) / (2.0 * variance))
 
     def _add_zs(self):
         """Add zs nodes to the model."""
