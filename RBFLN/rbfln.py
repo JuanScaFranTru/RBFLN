@@ -68,11 +68,16 @@ class RBFLN(object):
 
     def _add_loss(self):
         """Add loss function to model"""
-        pass
+        z = self.z
+        t = self.t
+        square = tf.square(z - t)
+        self.loss = tf.reduce_sum(square)
 
     def _add_input_and_output(self):
         """Add input and output placeholders to the model."""
-        pass
+        N = self.N
+        self.x = tf.placeholder(tf.float32, [N], name="Inputs")
+        self.t = tf.placeholder(tf.float32, [1], name="TrueValues")
 
     def _add_weights(self):
         """Add linear and non-linear weights to the model."""
