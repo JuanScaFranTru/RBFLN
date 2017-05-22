@@ -136,11 +136,18 @@ class RBFLN(object):
 
     def _add_zs(self):
         """Add zs nodes to the model."""
-        M = self.M
         N = self.N
-        x = tf.reshape(self.x, [N, 1])
-        y = tf.reshape(self.y, [M, 1])
-        w = tf.reshape(self.w, [1, N])
-        u = tf.reshape(self.u, [1, M])
+        x = self.x
+        w = self.w
 
-        self.z = (1/(M + N)) * (tf.matmul(y, u) + tf.matmul(x, w))
+        M = self.M
+        y = self.y
+        u = self.u
+
+        self.non_linear_sum = tf.reduce_sum(tf.multiply(y, u),
+                                            name="Non-Linear-Sum")
+
+        self.linear_sum = tf.reduce_sum(tf.multiply(x, w),
+                                        name="Linear-Sum")
+
+        self.z = 1/(M + N) * (self.linear_sum + self.non_linear_sum)
